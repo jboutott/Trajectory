@@ -1,3 +1,4 @@
 var foo = function() {
-	console.log("Test function");
+	console.log("Hello world!");
 }
+foo();
