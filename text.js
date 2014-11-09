@@ -1,14 +1,18 @@
-var readFile = function(filePath) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        var text = fileReader.result;
-        console.log("Text: " + text);
-    }
-    reader.onerror = function(e) {
-    	 console.log("Error: " + e);
-    }
-    reader.readAsText(filePath);
-};
+var readFile = function(filePath)
+{
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.open("GET",filePath,false);
+xmlhttp.send();
+console.log(xmlhttp.responseText);
+}
 
 var grabInput = function() {
   var scripts = document.getElementsByTagName("script");
