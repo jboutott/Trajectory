@@ -1,11 +1,11 @@
 window.onload = function() {
-	var scripts = document.getElementsByTagName("script");
+	var scripts = document.getElementsByTagName("trajectory");
 	var scriptText;
 	for (var i = 0; i < scripts.length; i++) {
-		if(scripts[i].src && scripts[i].src.indexOf("TrajectoryRecord") == -1) {
-			console.log("Reading file: " + scripts[i].src);
-			scriptText = readFile(scripts[i].src);
-			
+		var src = scripts[i].getAttribute('src');
+		if(src && src.indexOf("TrajectoryRecord") == -1) {
+			console.log("Reading file: " + src);
+			scriptText = readFile(src);
 			console.log("Modifying the file...");
 			scriptText = modifyText(scriptText);
 			
@@ -14,7 +14,7 @@ window.onload = function() {
 			
 			console.log("Creating new script tag...");
 			newTag = document.createElement("script");
-			newTag.innerHTML = scriptText;
+			newTag.innerHTML = scriptText;	
 			document.head.appendChild(newTag);
 		}
 	}
