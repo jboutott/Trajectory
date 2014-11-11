@@ -1,4 +1,6 @@
 window.onload = function() {
+	//Initialize the log file, and the log buffer
+	//Add a listener for exceptions
 	var scripts = document.getElementsByTagName("trajectory");
 	var scriptText;
 	for (var i = 0; i < scripts.length; i++) {
@@ -14,11 +16,11 @@ window.onload = function() {
 			
 			console.log("Creating new script tag...");
 			newTag = document.createElement("script");
-			newTag.innerHTML = scriptText;	
+			newTag.innerHTML = scriptText;
 			document.head.appendChild(newTag);
 		}
 	}
-};
+}
 
 var readFile = function(filePath) {
 	var xmlhttp;
@@ -36,5 +38,12 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
+	//add logValue calls around all the stuff we want to record
 	return text.replace("world", "WORLD");
+}
+
+var logValue = function(value) {
+	//LOG THE VALUE...
+	//if log buffer is too big, dump to the file
+	return value;
 }
