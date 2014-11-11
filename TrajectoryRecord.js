@@ -11,10 +11,10 @@ window.onload = function() {
 			console.log("Modifying the file...");
 			scriptText = modifyText(scriptText);
 			
-			console.log("Deleting original script tag...");
+			console.log("Deleting trajectory tag...");
 			scripts[i].parentNode.removeChild(scripts[i]);
 			
-			console.log("Creating new script tag...");
+			console.log("Creating script tag...");
 			newTag = document.createElement("script");
 			newTag.innerHTML = scriptText;
 			document.head.appendChild(newTag);
