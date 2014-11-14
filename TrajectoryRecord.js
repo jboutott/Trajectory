@@ -42,7 +42,9 @@ var readFile = function(filePath) {
 var modifyText = function(text) {
 	text = findBlocks(text, "if");
 	text = findBlocks(text, "switch");
-	//( ? : );
+	//need to handle ( ? : );
+	//also what if something is assigned a value of Math.random(), like a velocity
+	//we need to log that too
 	return text;
 }
 
@@ -63,22 +65,29 @@ var findBlocks = function(text, block) {
 				numParens--;
 			current++;
 		}while(numParens >= 0);
-		console.log(text.charAt(opening) + " " + text.charAt(current - 1));
-		//text = logBetween(text, opening, current - 1);
+		text = logBetween(text, opening, current);
 	}while(true);
 	
 	return text;
 }
 
 var logBetween = function(text, first, last) {
-	//text = [text.slice(0, first + 1), "logValue(", text.slice(first + 2)].join('');
-	//text = [text.slice(0, last), ")", text.slice(last + 1)].join('');
+	var fill = "logValue(" + text.slice(first + 1, last - 1) + ")";
+	text = text.slice(0, first + 1) + fill + text.slice(last - 1);
 	
 	return text;
 }
 
 var logValue = function(value) {
-	var result = eval(value);
-	logBuffer += result + "\n";
-	return result;
+	//So the logging is working, we might not actually have to call eval
+	//And sometimes the logging isn't getting a boolean expression, its getting an object or function
+	//this happens for statements like if(object) which are supposed to evaluate
+	//to true if the object is not null
+	//we'll have to figure out what to do about that...
+	//maybe somehow instrument it to a form like "object != null" ?
+	console.log("LOGGING");
+	console.log(value);
+	console.log(eval(value));
+	logBuffer += value + "\n";
+	return value;
 }
