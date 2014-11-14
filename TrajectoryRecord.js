@@ -85,9 +85,20 @@ var logValue = function(value) {
 	//to true if the object is not null
 	//we'll have to figure out what to do about that...
 	//maybe somehow instrument it to a form like "object != null" ?
-	console.log("LOGGING");
-	console.log(value);
-	console.log(eval(value));
+	
+	//Here's how I attempted to handle it
+	if(value != true && value != false) {
+		console.log("VALUE IS AN OBJECT");
+		console.log(value);
+		if(value == undefined || value == null)
+			value = "false";
+		else
+			value = "true";
+		console.log("VALUE IS NOW A BOOLEAN")
+		console.log(value);
+	}
 	logBuffer += value + "\n";
+	console.log("LOGGED: " + value);
+	
 	return value;
 }
