@@ -1,6 +1,8 @@
+var logBuffer;
+
 window.onload = function() {
-	//Initialize the log file, and the log buffer
-	//Add a listener for exceptions
+	logBuffer = "";
+	
 	var scripts = document.getElementsByTagName("trajectory");
 	var scriptText;
 	for (var i = 0; i < scripts.length; i++) {
@@ -38,12 +40,13 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
-	//add logValue calls around all the stuff we want to record
-	return text.replace("world", "WORLD");
+	var lastIf = 0;
+	do {
+		console.log(lastIf = text.indexOf("if(", lastIf));
+	} while(lastIf >= 0);
 }
 
 var logValue = function(value) {
-	//LOG THE VALUE...
-	//if log buffer is too big, dump to the file
+	logBuffer += value + "\n";
 	return value;
 }
