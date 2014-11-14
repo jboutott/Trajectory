@@ -40,13 +40,45 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
-	var lastIf = 0;
+	text = findBlocks(text, "if");
+	text = findBlocks(text, "switch");
+	//( ? : );
+	return text;
+}
+
+var findBlocks = function(text, block) {
+	var opening;
+	var current;
+	var numParens;
 	do {
-		console.log(lastIf = text.indexOf("if(", lastIf));
-	} while(lastIf >= 0);
+		numParens = 0;
+		current = text.indexOf(block + "(", current);
+		if(current == -1)	break;
+		current += block.length + 1;
+		opening = current - 1;
+		do {
+			if(text.charAt(current) == "(")
+				numParens++;
+			else if(text.charAt(current) == ")")
+				numParens--;
+			current++;
+		}while(numParens >= 0);
+		console.log(text.charAt(opening) + " " + text.charAt(current - 1));
+		//text = logBetween(text, opening, current - 1);
+	}while(true);
+	
+	return text;
+}
+
+var logBetween = function(text, first, last) {
+	//text = [text.slice(0, first + 1), "logValue(", text.slice(first + 2)].join('');
+	//text = [text.slice(0, last), ")", text.slice(last + 1)].join('');
+	
+	return text;
 }
 
 var logValue = function(value) {
-	logBuffer += value + "\n";
-	return value;
+	var result = eval(value);
+	logBuffer += result + "\n";
+	return result;
 }
