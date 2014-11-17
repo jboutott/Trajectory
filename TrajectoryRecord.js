@@ -88,17 +88,13 @@ var logValue = function(value) {
 	
 	//Here's how I attempted to handle it
 	if(value != true && value != false) {
-		console.log("VALUE IS AN OBJECT");
-		console.log(value);
 		if(value == undefined || value == null)
-			value = "false";
+			value = false;
 		else
-			value = "true";
-		console.log("VALUE IS NOW A BOOLEAN")
-		console.log(value);
+			value = true;
 	}
 	logBuffer += value + "\n";
-	console.log("LOGGED: " + value);
+	//console.log("LOGGED: " + value);
 	
 	return value;
 }
