@@ -41,7 +41,7 @@ var readFile = function(filePath) {
 
 var modifyText = function(text) {
 	text = logInput(text);
-	//text = logTimer(text);
+	text = logTimer(text);
 	text = logRandom(text);
 	
 	return text;
@@ -55,7 +55,20 @@ var logInput = function(text) {
 	var closing;
 	var current;
 	do {
-		numParens = 0;
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "logBoolean");
+		current = closing;
+	}while(true);
+	
+	var openPiece = "ig.input.pressed(";
+	var closePiece = ")";
+	
+	var opening = 0;
+	var closing = 0;
+	var current = 0;
+	do {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
@@ -69,6 +82,19 @@ var logInput = function(text) {
 var logTimer = function(text) {
 	var openPiece = "this.";
 	var closePiece = ".delta()";
+	
+	var opening;
+	var closing;
+	var current;
+	do {
+		closing = text.indexOf(closePiece, current) + closePiece.length;
+		opening = text.lastIndexOf(openPiece, closing);
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "logNumber");
+		current = closing + 3; //??????????????
+	}while(true);
+	
+	return text;
 }
 
 var logRandom = function(text) {
@@ -79,7 +105,6 @@ var logRandom = function(text) {
 	var closing;
 	var current;
 	do {
-		numParens = 0;
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
@@ -100,6 +125,7 @@ var logBetween = function(text, first, last, logType) {
 
 var logNumber = function(value) {
 	logBuffer += value + "\n";
+	console.log(value);
 	
 	return value;
 }
@@ -112,6 +138,7 @@ var logBoolean = function(value) {
 			value = true;
 	}
 	logBuffer += value + "\n";
+	console.log(value);
 	
 	return value;
 }
