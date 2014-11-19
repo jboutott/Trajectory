@@ -41,12 +41,9 @@ var readFile = function(filePath) {
 
 var modifyText = function(text) {
 	text = logInput(text);
-	//text = matchString(text, ".delta()");
+	//text = logTimer(text);
+	text = logRandom(text);
 	
-	//text = findBlocks(text, "if");
-	//text = findBlocks(text, "switch");
-	//Math.random();
-	//timer.delta();
 	return text;
 }
 
@@ -69,28 +66,29 @@ var logInput = function(text) {
 	return text;
 }
 
-/*var findBlocks = function(text, block) {
+var logTimer = function(text) {
+	var openPiece = "this.";
+	var closePiece = ".delta()";
+}
+
+var logRandom = function(text) {
+	var openPiece = "Math.random(";
+	var closePiece = ")";
+	
 	var opening;
+	var closing;
 	var current;
-	var numParens;
 	do {
 		numParens = 0;
-		current = text.indexOf(block + "(", current);
-		if(current == -1)	break;
-		current += block.length + 1;
-		opening = current - 1;
-		do {
-			if(text.charAt(current) == "(")
-				numParens++;
-			else if(text.charAt(current) == ")")
-				numParens--;
-			current++;
-		}while(numParens >= 0);
-		text = logBetween(text, opening, current);
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing);
+		current = closing;
 	}while(true);
 	
 	return text;
-}*/
+}
 
 var logBetween = function(text, first, last) {
 	var fill = "logValue(" + text.slice(first, last) + ")";
@@ -101,14 +99,7 @@ var logBetween = function(text, first, last) {
 }
 
 var logValue = function(value) {
-	if(value != true && value != false) {
-		if(value == undefined || value == null)
-			value = false;
-		else
-			value = true;
-	}
 	logBuffer += value + "\n";
-	//console.log("LOGGED: " + value);
 	
 	return value;
 }
