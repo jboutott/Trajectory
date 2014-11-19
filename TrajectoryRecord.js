@@ -40,15 +40,36 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
-	text = findBlocks(text, "if");
-	text = findBlocks(text, "switch");
-	//need to handle ( ? : );
-	//also what if something is assigned a value of Math.random(), like a velocity
-	//we need to log that too
+	text = logInput(text);
+	//text = matchString(text, ".delta()");
+	
+	//text = findBlocks(text, "if");
+	//text = findBlocks(text, "switch");
+	//Math.random();
+	//timer.delta();
 	return text;
 }
 
-var findBlocks = function(text, block) {
+var logInput = function(text) {
+	var openPiece = "ig.input.state(";
+	var closePiece = ")";
+	
+	var opening;
+	var closing;
+	var current;
+	do {
+		numParens = 0;
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing);
+		current = closing;
+	}while(true);
+	
+	return text;
+}
+
+/*var findBlocks = function(text, block) {
 	var opening;
 	var current;
 	var numParens;
@@ -69,11 +90,12 @@ var findBlocks = function(text, block) {
 	}while(true);
 	
 	return text;
-}
+}*/
 
 var logBetween = function(text, first, last) {
-	var fill = "logValue(" + text.slice(first + 1, last - 1) + ")";
-	text = text.slice(0, first + 1) + fill + text.slice(last - 1);
+	var fill = "logValue(" + text.slice(first, last) + ")";
+	console.log(fill);
+	text = text.slice(0, first) + fill + text.slice(last);
 	
 	return text;
 }
