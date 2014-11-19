@@ -79,14 +79,6 @@ var logBetween = function(text, first, last) {
 }
 
 var logValue = function(value) {
-	//So the logging is working, we might not actually have to call eval
-	//And sometimes the logging isn't getting a boolean expression, its getting an object or function
-	//this happens for statements like if(object) which are supposed to evaluate
-	//to true if the object is not null
-	//we'll have to figure out what to do about that...
-	//maybe somehow instrument it to a form like "object != null" ?
-	
-	//Here's how I attempted to handle it
 	if(value != true && value != false) {
 		if(value == undefined || value == null)
 			value = false;
@@ -97,4 +89,20 @@ var logValue = function(value) {
 	//console.log("LOGGED: " + value);
 	
 	return value;
+}
+
+var dumpLogToFile = function() {
+	//????
+	console.log("Dumpin'");
+}
+
+window.onerror = function handleException(error, url, lineNum) {
+    dumpLogToFile();
+    return false;
+}
+
+window.onkeydown = function(event) {
+	event = event || window.event;
+	if(event.keyCode == 81)
+		dumpLogToFile();
 }
