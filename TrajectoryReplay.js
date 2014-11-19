@@ -43,9 +43,27 @@ var readFile = function(filePath) {
 
 var modifyText = function(text) {
 	text = logInput(text);
-	//text = logTimer(text);	
+	text = logTimer(text);	
 	text = logRandom(text);
 
+	return text;
+}
+
+var logTimer = function(text) {
+	var openPiece = "this.";
+	var closePiece = ".delta()";
+	
+	var opening;
+	var closing;
+	var current;
+	do {
+		closing = text.indexOf(closePiece, current) + closePiece.length;
+		opening = text.lastIndexOf(openPiece, closing);
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "readLog");
+		current = closing + 3; //??????????????
+	}while(true);
+	
 	return text;
 }
 
