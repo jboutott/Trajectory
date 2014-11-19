@@ -59,7 +59,7 @@ var logInput = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing);
+		text = logBetween(text, opening, closing, "logBoolean");
 		current = closing;
 	}while(true);
 	
@@ -83,22 +83,34 @@ var logRandom = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing);
+		text = logBetween(text, opening, closing, "logNumber");
 		current = closing;
 	}while(true);
 	
 	return text;
 }
 
-var logBetween = function(text, first, last) {
-	var fill = "logValue(" + text.slice(first, last) + ")";
+var logBetween = function(text, first, last, logType) {
+	var fill = logType + "(" + text.slice(first, last) + ")";
 	console.log(fill);
 	text = text.slice(0, first) + fill + text.slice(last);
 	
 	return text;
 }
 
-var logValue = function(value) {
+var logNumber = function(value) {
+	logBuffer += value + "\n";
+	
+	return value;
+}
+
+var logBoolean = function(value) {
+	if(value != true && value != false) {
+		if(value == undefined || value == null)
+			value = false;
+		else
+			value = true;
+	}
 	logBuffer += value + "\n";
 	
 	return value;
@@ -108,7 +120,6 @@ function destroyClickedElement(event)
 {
 	document.body.removeChild(event.target);
 }
-
 
 var dumpLogToFile = function() {
 	var textFileAsBlob = new Blob([logBuffer], {type:'text/plain'});
