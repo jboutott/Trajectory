@@ -43,12 +43,9 @@ var readFile = function(filePath) {
 
 var modifyText = function(text) {
 	text = logInput(text);
-	//text = matchString(text, ".delta()");
-	
-	//text = findBlocks(text, "if");
-	//text = findBlocks(text, "switch");
-	//Math.random();
-	//timer.delta();
+	//text = logTimer(text);	
+	text = logRandom(text);
+
 	return text;
 }
 
@@ -64,36 +61,50 @@ var logInput = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing);
+		text = logBetween(text, opening, closing, "readLog");
 		current = closing;
 	}while(true);
 	
 	return text;
 }
 
-var logBetween = function(text, first, last) {
-	var fill = "readLog(" + text.slice(first, last) + ")";
-	text = text.slice(0, first) + fill + text.slice(last);
+var logRandom = function(text) {
+	var openPiece = "Math.random(";
+	var closePiece = ")";
+	
+	var opening;
+	var closing;
+	var current;
+	do {
+		numParens = 0;
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "readLog");
+		current = closing;
+	}while(true);
 	
 	return text;
 }
 
-var logValue = function(value) {
-	if(value != true && value != false) {
-		if(value == undefined || value == null)
-			value = false;
-		else
-			value = true;
-	}
-	logBuffer += value + "\n";
+
+var logBetween = function(text, first, last, logType) {
+	var fill = logType + "(" + text.slice(first, last) + ")";
+	text = text.slice(0, first) + fill + text.slice(last);
 	
-	return value;
+	return text;
 }
 
 var dumpFileToBuffer = function() {
 	var f = "TrajectoryLog.txt";
 	var contents = readFile(f);
 	logBuffer = contents.split("\n");
+}
+
+var readNumber = function(value) {
+	var value = logBuffer[currentEntry];
+	currentEntry++;
+	return value;
 }
 
 var readLog = function(value) {
