@@ -42,42 +42,52 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
-	text = findBlocks(text, "if");
+	text = logInput(text);
+	//text = matchString(text, ".delta()");
+	
+	//text = findBlocks(text, "if");
 	//text = findBlocks(text, "switch");
-	//need to handle ( ? : );
-	//also what if something is assigned a value of Math.random(), like a velocity
-	//we need to log that too
+	//Math.random();
+	//timer.delta();
 	return text;
 }
 
-var findBlocks = function(text, block) {
+var logInput = function(text) {
+	var openPiece = "ig.input.state(";
+	var closePiece = ")";
+	
 	var opening;
+	var closing;
 	var current;
-	var numParens;
 	do {
 		numParens = 0;
-		current = text.indexOf(block + "(", current);
-		if(current == -1)	break;
-		current += block.length + 1;
-		opening = current - 1;
-		do {
-			if(text.charAt(current) == "(")
-				numParens++;
-			else if(text.charAt(current) == ")")
-				numParens--;
-			current++;
-		}while(numParens >= 0);
-		text = logBetween(text, opening, current);
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing);
+		current = closing;
 	}while(true);
 	
 	return text;
 }
 
 var logBetween = function(text, first, last) {
-	var fill = "readLog(" + text.slice(first + 1, last - 1) + ")";
-	text = text.slice(0, first + 1) + fill + text.slice(last - 1);
+	var fill = "readLog(" + text.slice(first, last) + ")";
+	text = text.slice(0, first) + fill + text.slice(last);
 	
 	return text;
+}
+
+var logValue = function(value) {
+	if(value != true && value != false) {
+		if(value == undefined || value == null)
+			value = false;
+		else
+			value = true;
+	}
+	logBuffer += value + "\n";
+	
+	return value;
 }
 
 var dumpFileToBuffer = function() {
@@ -87,15 +97,8 @@ var dumpFileToBuffer = function() {
 }
 
 var readLog = function(value) {
-	//console.log(value);
 	var returnValue = logBuffer[currentEntry];
-	//console.log(returnValue);
-		
-	if(value !== true && value !== false) {
-		return value;
-	}
-	
-	currentEntry++;	
+	currentEntry++;
 	if (returnValue === "true") {
 		return true;
 	} else if (returnValue === "false") {
