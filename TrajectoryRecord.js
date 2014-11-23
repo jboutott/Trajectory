@@ -3,223 +3,222 @@ var trj_logBuffer;
 window.onload = function() {
 	trj_logBuffer = "";
 	
-	var scripts = document.getElementsByTagName("trajectory");
-	var scriptText;
-	for (var i = 0; i < scripts.length; i++) {
-		var src = scripts[i].getAttribute('src');
-		if(src && src.indexOf("TrajectoryRecord") == -1) {
-			scriptText = trj_readFile(src);
-			scriptText = trj_modifyText(scriptText);
+	var trj_scripts = document.getElementsByTagName("trajectory");
+	var trj_scriptText;
+	for (var i = 0; i < trj_scripts.length; i++) {
+		var trj_src = trj_scripts[i].getAttribute('src');
+		if(trj_src && trj_src.indexOf("TrajectoryRecord") == -1) {
+			trj_scriptText = trj_readFile(trj_src);
+			trj_scriptText = trj_modifyText(trj_scriptText);
 			
-			scripts[i].parentNode.removeChild(scripts[i]);
+			trj_scripts[i].parentNode.removeChild(trj_scripts[i]);
 			
-			newTag = document.createElement("script");
-			newTag.innerHTML = scriptText;
-			document.head.appendChild(newTag);
+			trj_newTag = document.createElement("script");
+			trj_newTag.innerHTML = trj_scriptText;
+			document.head.appendChild(trj_newTag);
 		}
 	}
 }
 
-var trj_readFile = function(filePath) {
-	var xmlhttp;
+var trj_readFile = function(trj_filePath) {
+	var trj_xmlhttp;
 	//IE7+, Firefox, Chrome, Opera, Safari
 	if(window.XMLHttpRequest) {
-		xmlhttp = new XMLHttpRequest();
+		trj_xmlhttp = new XMLHttpRequest();
 	}
 	//IE6, IE5
 	else {
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		trj_xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	xmlhttp.open("GET", filePath, false);
-	xmlhttp.send();
-	return xmlhttp.responseText;
+	trj_xmlhttp.open("GET", trj_filePath, false);
+	trj_xmlhttp.send();
+	return trj_xmlhttp.responseText;
 }
 
-var trj_modifyText = function(text) {
-	text = trj_logInput(text);
-	text = trj_logTimer(text);
-	text = trj_logRandom(text);
-	text = trj_logTick(text);
+var trj_modifyText = function(trj_text) {
+	trj_text = trj_logInput(trj_text);
+	trj_text = trj_logTimer(trj_text);
+	trj_text = trj_logRandom(trj_text);
+	trj_text = trj_logTick(trj_text);
 	
-	return text;
+	return trj_text;
 }
 
-var trj_logInput = function(text) {
-	var openPiece = "ig.input.state(";
-	var closePiece = ")";
+var trj_logInput = function(trj_text) {
+	var trj_openPiece = "ig.input.state(";
+	var trj_closePiece = ")";
 	
-	var opening = 0;
-	var closing = 0;
-	var current = 0;
+	var trj_opening = 0;
+	var trj_closing = 0;
+	var trj_current = 0;
 	while(true) {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = trj_logBetween(text, opening, closing, "trj_logBoolean");
-		current = closing;
+		trj_opening = trj_text.indexOf(trj_openPiece, trj_current);
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_opening) + 1;
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_logBoolean");
+		trj_current = trj_closing;
 	}
 	
-	openPiece = "ig.input.pressed(";
-	closePiece = ")";
+	trj_openPiece = "ig.input.pressed(";
+	trj_closePiece = ")";
 	
-	opening = 0;
-	closing = 0;
-	current = 0;
+	trj_opening = 0;
+	trj_closing = 0;
+	trj_current = 0;
 	while(true) {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = trj_logBetween(text, opening, closing, "trj_logBoolean");
-		current = closing;
+		trj_opening = trj_text.indexOf(trj_openPiece, trj_current);
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_opening) + 1;
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_logBoolean");
+		trj_current = trj_closing;
 	}
 	
-	openPiece = "ig.input.released(";
-	closePiece = ")";
+	trj_openPiece = "ig.input.released(";
+	trj_closePiece = ")";
 	
-	opening = 0;
-	closing = 0;
-	current = 0;
+	trj_opening = 0;
+	trj_closing = 0;
+	trj_current = 0;
 	while(true) {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = trj_logBetween(text, opening, closing, "trj_logBoolean");
-		current = closing;
+		trj_opening = trj_text.indexOf(trj_openPiece, trj_current);
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_opening) + 1;
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_logBoolean");
+		trj_current = trj_closing;
 	}
 	
-	var target = "ig.input.mouse.x";
+	var trj_target = "ig.input.mouse.x";
 	
-	current = 0;
+	trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
-		current += target.length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_logNumber");
+		trj_current += trj_target.length;
 	}
 	
-	target = "ig.input.mouse.y";
+	trj_target = "ig.input.mouse.y";
 	
-	current = 0;
+	trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
-		current += target.length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_logNumber");
+		trj_current += trj_target.length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var trj_logTimer = function(text) {
-return text;
-	var openPiece = "this.";
-	var closePiece = ".delta()";
+var trj_logTimer = function(trj_text) {
+	var trj_openPiece = "this.";
+	var trj_closePiece = ".delta()";
 	
-	var opening = 0;
-	var closing = 0;
-	var current = 0;
+	var trj_opening = 0;
+	var trj_closing = 0;
+	var trj_current = 0;
 	while(true) {
-		closing = text.indexOf(closePiece, current) + closePiece.length;
-		opening = text.lastIndexOf(openPiece, closing);
-		if(opening == -1 || closing == -1)	break;
-		text = trj_logBetween(text, opening, closing, "trj_logNumber");
-		current = closing + "trj_logNumber".length;
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_current) + trj_closePiece.length;
+		trj_opening = trj_text.lastIndexOf(trj_openPiece, trj_closing);
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_logNumber");
+		trj_current = trj_closing + "trj_logNumber".length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var trj_logRandom = function(text) {
-	var target = "Math.random()";
+var trj_logRandom = function(trj_text) {
+	var trj_target = "Math.random()";
 	
-	var current = 0;
+	var trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
-		current += target.length + "trj_logNumber".length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_logNumber");
+		trj_current += trj_target.length + "trj_logNumber".length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var trj_logTick = function(text) {
-	var target = "ig.system.tick";
+var trj_logTick = function(trj_text) {
+	var trj_target = "ig.system.tick";
 	
-	var current = 0;
+	var trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
-		current += target.length + "trj_logNumber".length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_logNumber");
+		trj_current += trj_target.length + "trj_logNumber".length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var trj_logBetween = function(text, first, last, logType) {
-	var fill = logType + "(" + text.slice(first, last) + ")";
-	text = text.slice(0, first) + fill + text.slice(last);
+var trj_logBetween = function(trj_text, trj_first, trj_last, trj_logType) {
+	var trj_fill = trj_logType + "(" + trj_text.slice(trj_first, trj_last) + ")";
+	trj_text = trj_text.slice(0, trj_first) + trj_fill + trj_text.slice(trj_last);
 	
-	return text;
+	return trj_text;
 }
 
-var trj_logNumber = function(value) {
-	trj_logBuffer += value + "\n";
+var trj_logNumber = function(trj_value) {
+	trj_logBuffer += trj_value + "\n";
 	
-	return value;
+	return trj_value;
 }
 
-var trj_logBoolean = function(value) {
-	if(value != true && value != false) {
-		if(value == undefined || value == null)
-			value = false;
+var trj_logBoolean = function(trj_value) {
+	if(trj_value != true && trj_value != false) {
+		if(trj_value == undefined || trj_value == null)
+			trj_value = false;
 		else
-			value = true;
+			trj_value = true;
 	}
-	trj_logBuffer += value + "\n";
+	trj_logBuffer += trj_value + "\n";
 	
-	return value;
+	return trj_value;
 }
 
-function destroyClickedElement(event)
+function trj_destroyClickedElement(trj_event)
 {
-	document.body.removeChild(event.target);
+	document.body.removeChild(trj_event.target);
 }
 
 var trj_dumpLogToFile = function() {
-	var textFileAsBlob = new Blob([trj_logBuffer], {type:'text/plain'});
-	var fileName = "TrajectoryLog.txt";
+	var trj_textFileAsBlob = new Blob([trj_logBuffer], {type:'trj_text/plain'});
+	var trj_fileName = "TrajectoryLog.txt";
 
-	var downloadLink = document.createElement("a");
-	downloadLink.download = fileName;
-	downloadLink.innerHTML = "Download File";
+	var trj_downloadLink = document.createElement("a");
+	trj_downloadLink.download = trj_fileName;
+	trj_downloadLink.innerHTML = "Download File";
 	if (window.webkitURL != null)
 	{
 		// Chrome allows the link to be clicked
 		// without actually adding it to the DOM.
-		downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+		trj_downloadLink.href = window.webkitURL.createObjectURL(trj_textFileAsBlob);
 	}
 	else
 	{
 		// Firefox requires the link to be added to the DOM
 		// before it can be clicked.
-		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-		downloadLink.onclick = destroyClickedElement;
-		downloadLink.style.display = "none";
-		document.body.appendChild(downloadLink);
+		trj_downloadLink.href = window.URL.createObjectURL(trj_textFileAsBlob);
+		trj_downloadLink.onclick = trj_destroyClickedElement;
+		trj_downloadLink.style.display = "none";
+		document.body.appendChild(trj_downloadLink);
 	}
 
-	downloadLink.click();
+	trj_downloadLink.click();
 }
 
-window.onerror = function handleException(error, url, lineNum) {
+window.onerror = function trj_handleException(trj_error, trj_url, trj_lineNum) {
     trj_dumpLogToFile();
     return false;
 }
 
-window.onkeydown = function(event) {
-	event = event || window.event;
-	if(event.keyCode === 81)
+window.onkeydown = function(trj_event) {
+	trj_event = trj_event || window.event;
+	if(trj_event.keyCode === 81)
 		trj_dumpLogToFile();
 }
