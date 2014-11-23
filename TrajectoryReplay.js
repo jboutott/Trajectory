@@ -42,10 +42,11 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
-	//text = logInput(text);
+	text = logInput(text);
 	text = logTimer(text);	
 	text = logRandom(text);
 	text = logTick(text);
+	
 	return text;
 }
 
