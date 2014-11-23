@@ -54,16 +54,16 @@ var logTimer = function(text) {
 	var openPiece = "this.";
 	var closePiece = ".delta()";
 	
-	var opening;
-	var closing;
-	var current;
-	do {
+	var opening = 0;
+	var closing = 0;
+	var current = 0;
+	while(true) {
 		closing = text.indexOf(closePiece, current) + closePiece.length;
 		opening = text.lastIndexOf(openPiece, closing);
 		if(opening == -1 || closing == -1)	break;
 		text = logBetween(text, opening, closing, "readNumber");
 		current = closing + 4; //??????????????
-	}while(true);
+	}
 	
 	return text;
 }
@@ -72,17 +72,64 @@ var logInput = function(text) {
 	var openPiece = "ig.input.state(";
 	var closePiece = ")";
 	
-	var opening;
-	var closing;
-	var current;
-	do {
-		numParens = 0;
+	var opening = 0;
+	var closing = 0;
+	var current = 0;
+	while(true) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
 		text = logBetween(text, opening, closing, "readBoolean");
 		current = closing;
-	}while(true);
+	}
+	
+	openPiece = "ig.input.pressed(";
+	closePiece = ")";
+	
+	opening = 0;
+	closing = 0;
+	current = 0;
+	while(true) {
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "readBoolean");
+		current = closing;
+	}
+	
+	openPiece = "ig.input.released(";
+	closePiece = ")";
+	
+	opening = 0;
+	closing = 0;
+	current = 0;
+	while(true) {
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "readBoolean");
+		current = closing;
+	}
+	
+	var target = "ig.input.mouse.x";
+	
+	current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "readNumber");
+		current += target.length;
+	}
+	
+	target = "ig.input.mouse.y";
+	
+	current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "readNumber");
+		current += target.length;
+	}
 	
 	return text;
 }

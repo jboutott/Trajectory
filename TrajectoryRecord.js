@@ -77,6 +77,40 @@ var logInput = function(text) {
 		current = closing;
 	}
 	
+	openPiece = "ig.input.released(";
+	closePiece = ")";
+	
+	opening = 0;
+	closing = 0;
+	current = 0;
+	while(true) {
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "logBoolean");
+		current = closing;
+	}
+	
+	var target = "ig.input.mouse.x";
+	
+	current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "logNumber");
+		current += target.length;
+	}
+	
+	target = "ig.input.mouse.y";
+	
+	current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "logNumber");
+		current += target.length;
+	}
+	
 	return text;
 }
 
