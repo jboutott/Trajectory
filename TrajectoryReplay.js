@@ -1,207 +1,206 @@
-var logBuffer;
-var currentEntry;
-var tookOver = false;
+var trj_logBuffer;
+var trj_currentEntry;
+var trj_tookOver = false;
 
 window.onload = function() {
-	logBuffer = "";
-	currentEntry = 0;
-	dumpFileToBuffer();
-	var scripts = document.getElementsByTagName("trajectory");
-	var scriptText;
-	for (var i = 0; i < scripts.length; i++) {
-		var src = scripts[i].getAttribute('src');
-		if(src && src.indexOf("TrajectoryReplay") == -1) {
-			scriptText = readFile(src);
-			scriptText = modifyText(scriptText);
+	trj_logBuffer = "";
+	trj_currentEntry = 0;
+	trj_dumpFileToBuffer();
+	var trj_scripts = document.getElementsByTagName("trajectory");
+	var trj_scriptText;
+	for (var i = 0; i < trj_scripts.length; i++) {
+		var trj_src = trj_scripts[i].getAttribute('src');
+		if(trj_src && trj_src.indexOf("TrajectoryReplay") == -1) {
+			trj_scriptText = trj_readFile(trj_src);
+			trj_scriptText = trj_modifyText(trj_scriptText);
 			
-			scripts[i].parentNode.removeChild(scripts[i]);
+			trj_scripts[i].parentNode.removeChild(trj_scripts[i]);
 			
-			newTag = document.createElement("script");
-			newTag.innerHTML = scriptText;
-			document.head.appendChild(newTag);
+			trj_newTag = document.createElement("script");
+			trj_newTag.innerHTML = trj_scriptText;
+			document.head.appendChild(trj_newTag);
 		}
 	}
 }
 
-var readFile = function(filePath) {
-	var xmlhttp;
+var trj_readFile = function(trj_filePath) {
+	var trj_xmlhttp;
 	//IE7+, Firefox, Chrome, Opera, Safari
 	if(window.XMLHttpRequest) {
-		xmlhttp = new XMLHttpRequest();
+		trj_xmlhttp = new XMLHttpRequest();
 	}
 	//IE6, IE5
 	else {
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		trj_xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	xmlhttp.open("GET", filePath, false);
-	xmlhttp.send();
-	return xmlhttp.responseText;
+	trj_xmlhttp.open("GET", trj_filePath, false);
+	trj_xmlhttp.send();
+	return trj_xmlhttp.responseText;
 }
 
-var modifyText = function(text) {
-	text = logInput(text);
-	text = logTimer(text);	
-	text = logRandom(text);
-	text = logTick(text);
+var trj_modifyText = function(trj_text) {
+	trj_text = trj_logInput(trj_text);
+	trj_text = trj_logTimer(trj_text);
+	trj_text = trj_logRandom(trj_text);
+	trj_text = trj_logTick(trj_text);
 	
-	return text;
+	return trj_text;
 }
 
-var logTimer = function(text) {
-	var openPiece = "this.";
-	var closePiece = ".delta()";
+var trj_logTimer = function(trj_text) {
+	var trj_openPiece = "this.";
+	var trj_closePiece = ".delta()";
 	
-	var opening = 0;
-	var closing = 0;
-	var current = 0;
+	var trj_opening = 0;
+	var trj_closing = 0;
+	var trj_current = 0;
 	while(true) {
-		closing = text.indexOf(closePiece, current) + closePiece.length;
-		opening = text.lastIndexOf(openPiece, closing);
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readNumber");
-		current = closing + 4; //??????????????
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_current) + trj_closePiece.length;
+		trj_opening = trj_text.lastIndexOf(trj_openPiece, trj_closing);
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_readNumber");
+		trj_current = trj_closing + "trj_readNumber".length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var logInput = function(text) {
-	var openPiece = "ig.input.state(";
-	var closePiece = ")";
+var trj_logInput = function(trj_text) {
+	var trj_openPiece = "ig.input.state(";
+	var trj_closePiece = ")";
 	
-	var opening = 0;
-	var closing = 0;
-	var current = 0;
+	var trj_opening = 0;
+	var trj_closing = 0;
+	var trj_current = 0;
 	while(true) {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readBoolean");
-		current = closing;
+		trj_opening = trj_text.indexOf(trj_openPiece, trj_current);
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_opening) + 1;
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_readBoolean");
+		trj_current = trj_closing;
 	}
 	
-	openPiece = "ig.input.pressed(";
-	closePiece = ")";
+	trj_openPiece = "ig.input.pressed(";
+	trj_closePiece = ")";
 	
-	opening = 0;
-	closing = 0;
-	current = 0;
+	trj_opening = 0;
+	trj_closing = 0;
+	trj_current = 0;
 	while(true) {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readBoolean");
-		current = closing;
+		trj_opening = trj_text.indexOf(trj_openPiece, trj_current);
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_opening) + 1;
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_readBoolean");
+		trj_current = trj_closing;
 	}
 	
-	openPiece = "ig.input.released(";
-	closePiece = ")";
+	trj_openPiece = "ig.input.released(";
+	trj_closePiece = ")";
 	
-	opening = 0;
-	closing = 0;
-	current = 0;
+	trj_opening = 0;
+	trj_closing = 0;
+	trj_current = 0;
 	while(true) {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readBoolean");
-		current = closing;
+		trj_opening = trj_text.indexOf(trj_openPiece, trj_current);
+		trj_closing = trj_text.indexOf(trj_closePiece, trj_opening) + 1;
+		if(trj_opening == -1 || trj_closing == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_opening, trj_closing, "trj_readBoolean");
+		trj_current = trj_closing;
 	}
 	
-	var target = "ig.input.mouse.x";
+	var trj_target = "ig.input.mouse.x";
 	
-	current = 0;
+	trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "readNumber");
-		current += target.length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_readNumber");
+		trj_current += trj_target.length;
 	}
 	
-	target = "ig.input.mouse.y";
+	trj_target = "ig.input.mouse.y";
 	
-	current = 0;
+	trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "readNumber");
-		current += target.length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_readNumber");
+		trj_current += trj_target.length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var logRandom = function(text) {
-	var target = "Math.random()";
+var trj_logRandom = function(trj_text) {
+	var trj_target = "Math.random()";
 	
-	var current = 0;
+	var trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "readNumber");
-		current += target.length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_readNumber");
+		trj_current += trj_target.length + "trj_readNumber".length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
-var logTick = function(text) {
-	var target = "ig.system.tick";
+var trj_logTick = function(trj_text) {
+	var trj_target = "ig.system.tick";
 	
-	var current = 0;
+	var trj_current = 0;
 	while(true) {
-		current = text.indexOf(target, current);
-		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "readNumber");
-		current += target.length;
+		trj_current = trj_text.indexOf(trj_target, trj_current);
+		if(trj_current == -1)	break;
+		trj_text = trj_logBetween(trj_text, trj_current, trj_current + trj_target.length, "trj_readNumber");
+		trj_current += trj_target.length + "trj_readNumber".length;
 	}
 	
-	return text;
+	return trj_text;
 }
 
 
-var logBetween = function(text, first, last, logType) {
-	var fill = logType + "(" + text.slice(first, last) + ")";
-	text = text.slice(0, first) + fill + text.slice(last);
+var trj_logBetween = function(trj_text, trj_first, trj_last, trj_logType) {
+	var trj_fill = trj_logType + "(" + trj_text.slice(trj_first, trj_last) + ")";
+	trj_text = trj_text.slice(0, trj_first) + trj_fill + trj_text.slice(trj_last);
 	
-	return text;
+	return trj_text;
 }
 
-var dumpFileToBuffer = function() {
-	var f = "TrajectoryLog.txt";
-	var contents = readFile(f);
-	logBuffer = contents.split("\n");
+var trj_dumpFileToBuffer = function() {
+	var trj_f = "TrajectoryLog.txt";
+	var trj_contents = trj_readFile(trj_f);
+	trj_logBuffer = trj_contents.split("\n");
 }
 
-var readNumber = function(value) {
-	if ((currentEntry >= logBuffer.length) || tookOver) {
+var trj_readNumber = function(trj_value) {
+	if ((trj_currentEntry >= trj_logBuffer.length) || trj_tookOver) {
 		// Replay has ended/developer has taken over
-		return value;
+		return trj_value;
 	}
-	var entry = logBuffer[currentEntry];
-	currentEntry++;
+	var trj_entry = trj_logBuffer[trj_currentEntry];
+	trj_currentEntry++;
 
-	return entry;
+	return trj_entry;
 }
 
-var readBoolean = function(value) {
-
-	if ((currentEntry >= logBuffer.length) || tookOver) {
+var trj_readBoolean = function(trj_value) {
+	if ((trj_currentEntry >= trj_logBuffer.length) || trj_tookOver) {
 		// Replay has ended/developer has taken over
-		return value;
+		return trj_value;
 	}
-	var entry = logBuffer[currentEntry];
-	currentEntry++;
+	var trj_entry = trj_logBuffer[trj_currentEntry];
+	trj_currentEntry++;
 
-	if (entry === "true") {
+	if (trj_entry === "true") {
 		return true;
-	} else if (entry === "false") {
+	} else if (trj_entry === "false") {
 		return false;
 	}
 	
-	return entry;
+	return trj_entry;
 }
 
-window.onkeydown = function(event) {
-	tookOver = true;
+window.onkeydown = function(trj_event) {
+	trj_tookOver = true;
 }
