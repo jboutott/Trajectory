@@ -9,7 +9,7 @@ window.onload = function() {
 	var scriptText;
 	for (var i = 0; i < scripts.length; i++) {
 		var src = scripts[i].getAttribute('src');
-		if(src && src.indexOf("TrajectoryRecord") == -1) {
+		if(src && src.indexOf("TrajectoryReplay") == -1) {
 			console.log("Reading file: " + src);
 			scriptText = readFile(src);
 			console.log("Modifying the file...");
@@ -42,10 +42,10 @@ var readFile = function(filePath) {
 }
 
 var modifyText = function(text) {
-	text = logInput(text);
+	//text = logInput(text);
 	text = logTimer(text);	
 	text = logRandom(text);
-
+	text = logTick(text);
 	return text;
 }
 
@@ -60,8 +60,8 @@ var logTimer = function(text) {
 		closing = text.indexOf(closePiece, current) + closePiece.length;
 		opening = text.lastIndexOf(openPiece, closing);
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readLog");
-		current = closing + 3; //??????????????
+		text = logBetween(text, opening, closing, "readNumber");
+		current = closing + 4; //??????????????
 	}while(true);
 	
 	return text;
@@ -79,7 +79,7 @@ var logInput = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readLog");
+		text = logBetween(text, opening, closing, "readBoolean");
 		current = closing;
 	}while(true);
 	
@@ -87,20 +87,29 @@ var logInput = function(text) {
 }
 
 var logRandom = function(text) {
-	var openPiece = "Math.random(";
-	var closePiece = ")";
+	var target = "Math.random()";
 	
-	var opening;
-	var closing;
-	var current;
-	do {
-		numParens = 0;
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "readLog");
-		current = closing;
-	}while(true);
+	var current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "readNumber");
+		current += target.length;
+	}
+	
+	return text;
+}
+
+var logTick = function(text) {
+	var target = "ig.system.tick";
+	
+	var current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "readNumber");
+		current += target.length;
+	}
 	
 	return text;
 }
@@ -120,20 +129,34 @@ var dumpFileToBuffer = function() {
 }
 
 var readNumber = function(value) {
-	var value = logBuffer[currentEntry];
+	if (currentEntry >= logBuffer.length) {
+		// Replay has ended.
+		return value;
+	}
+	var entry = logBuffer[currentEntry];
 	currentEntry++;
-	return value;
+	console.log(entry);
+	if (isNaN(entry)) {
+		//console.log("NOT A NUMBER READ: " + entry);
+	}
+	return entry;
 }
 
-var readLog = function(value) {
-	var returnValue = logBuffer[currentEntry];
+var readBoolean = function(value) {
+	if (currentEntry >= logBuffer.length) {
+		// Replay has ended.
+		return value;
+	}
+	var entry = logBuffer[currentEntry];
 	currentEntry++;
-	if (returnValue === "true") {
+
+	if (entry === "true") {
 		return true;
-	} else if (returnValue === "false") {
+	} else if (entry === "false") {
 		return false;
 	}
+	console.log("NOT A BOOLEAN: " + entry);
 	
-	return value;
+	return entry;
 }
 
