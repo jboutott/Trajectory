@@ -1,5 +1,6 @@
 var logBuffer;
 var currentEntry;
+var tookOver = false;
 
 window.onload = function() {
 	logBuffer = "";
@@ -10,15 +11,11 @@ window.onload = function() {
 	for (var i = 0; i < scripts.length; i++) {
 		var src = scripts[i].getAttribute('src');
 		if(src && src.indexOf("TrajectoryReplay") == -1) {
-			console.log("Reading file: " + src);
 			scriptText = readFile(src);
-			console.log("Modifying the file...");
 			scriptText = modifyText(scriptText);
 			
-			console.log("Deleting trajectory tag...");
 			scripts[i].parentNode.removeChild(scripts[i]);
 			
-			console.log("Creating script tag...");
 			newTag = document.createElement("script");
 			newTag.innerHTML = scriptText;
 			document.head.appendChild(newTag);
@@ -177,22 +174,20 @@ var dumpFileToBuffer = function() {
 }
 
 var readNumber = function(value) {
-	if (currentEntry >= logBuffer.length) {
-		// Replay has ended.
+	if ((currentEntry >= logBuffer.length) || tookOver) {
+		// Replay has ended/developer has taken over
 		return value;
 	}
 	var entry = logBuffer[currentEntry];
 	currentEntry++;
-	console.log(entry);
-	if (isNaN(entry)) {
-		//console.log("NOT A NUMBER READ: " + entry);
-	}
+
 	return entry;
 }
 
 var readBoolean = function(value) {
-	if (currentEntry >= logBuffer.length) {
-		// Replay has ended.
+
+	if ((currentEntry >= logBuffer.length) || tookOver) {
+		// Replay has ended/developer has taken over
 		return value;
 	}
 	var entry = logBuffer[currentEntry];
@@ -203,8 +198,10 @@ var readBoolean = function(value) {
 	} else if (entry === "false") {
 		return false;
 	}
-	console.log("NOT A BOOLEAN: " + entry);
 	
 	return entry;
 }
 
+window.onkeydown = function(event) {
+	tookOver = true;
+}

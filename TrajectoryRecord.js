@@ -8,15 +8,11 @@ window.onload = function() {
 	for (var i = 0; i < scripts.length; i++) {
 		var src = scripts[i].getAttribute('src');
 		if(src && src.indexOf("TrajectoryRecord") == -1) {
-			console.log("Reading file: " + src);
 			scriptText = readFile(src);
-			console.log("Modifying the file...");
 			scriptText = modifyText(scriptText);
 			
-			console.log("Deleting trajectory tag...");
 			scripts[i].parentNode.removeChild(scripts[i]);
 			
-			console.log("Creating script tag...");
 			newTag = document.createElement("script");
 			newTag.innerHTML = scriptText;
 			document.head.appendChild(newTag);
@@ -162,7 +158,6 @@ var logTick = function(text) {
 
 var logBetween = function(text, first, last, logType) {
 	var fill = logType + "(" + text.slice(first, last) + ")";
-	console.log(fill);
 	text = text.slice(0, first) + fill + text.slice(last);
 	
 	return text;
@@ -170,7 +165,6 @@ var logBetween = function(text, first, last, logType) {
 
 var logNumber = function(value) {
 	logBuffer += value + "\n";
-	console.log(value);
 	
 	return value;
 }
@@ -183,7 +177,6 @@ var logBoolean = function(value) {
 			value = true;
 	}
 	logBuffer += value + "\n";
-	console.log(value);
 	
 	return value;
 }
@@ -226,6 +219,6 @@ window.onerror = function handleException(error, url, lineNum) {
 
 window.onkeydown = function(event) {
 	event = event || window.event;
-	if(event.keyCode == 81)
+	if(event.keyCode === 81)
 		dumpLogToFile();
 }
