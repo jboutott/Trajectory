@@ -43,6 +43,7 @@ var modifyText = function(text) {
 	text = logInput(text);
 	text = logTimer(text);
 	text = logRandom(text);
+	text = logTick(text);
 	
 	return text;
 }
@@ -51,30 +52,30 @@ var logInput = function(text) {
 	var openPiece = "ig.input.state(";
 	var closePiece = ")";
 	
-	var opening;
-	var closing;
-	var current;
-	do {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "logBoolean");
-		current = closing;
-	}while(true);
-	
-	var openPiece = "ig.input.pressed(";
-	var closePiece = ")";
-	
 	var opening = 0;
 	var closing = 0;
 	var current = 0;
-	do {
+	while(true) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
 		text = logBetween(text, opening, closing, "logBoolean");
 		current = closing;
-	}while(true);
+	}
+	
+	openPiece = "ig.input.pressed(";
+	closePiece = ")";
+	
+	opening = 0;
+	closing = 0;
+	current = 0;
+	while(true) {
+		opening = text.indexOf(openPiece, current);
+		closing = text.indexOf(closePiece, opening) + 1;
+		if(opening == -1 || closing == -1)	break;
+		text = logBetween(text, opening, closing, "logBoolean");
+		current = closing;
+	}
 	
 	return text;
 }
@@ -83,34 +84,44 @@ var logTimer = function(text) {
 	var openPiece = "this.";
 	var closePiece = ".delta()";
 	
-	var opening;
-	var closing;
-	var current;
-	do {
+	var opening = 0;
+	var closing = 0;
+	var current = 0;
+	while(true) {
 		closing = text.indexOf(closePiece, current) + closePiece.length;
 		opening = text.lastIndexOf(openPiece, closing);
 		if(opening == -1 || closing == -1)	break;
 		text = logBetween(text, opening, closing, "logNumber");
 		current = closing + 3; //??????????????
-	}while(true);
+	}
 	
 	return text;
 }
 
 var logRandom = function(text) {
-	var openPiece = "Math.random(";
-	var closePiece = ")";
+	var target = "Math.random()";
 	
-	var opening;
-	var closing;
-	var current;
-	do {
-		opening = text.indexOf(openPiece, current);
-		closing = text.indexOf(closePiece, opening) + 1;
-		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "logNumber");
-		current = closing;
-	}while(true);
+	var current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "logNumber");
+		current += target.length;
+	}
+	
+	return text;
+}
+
+var logTick = function(text) {
+	var target = "ig.system.tick";
+	
+	var current = 0;
+	while(true) {
+		current = text.indexOf(target, current);
+		if(current == -1)	break;
+		text = logBetween(text, current, current + target.length, "logNumber");
+		current += target.length;
+	}
 	
 	return text;
 }
@@ -172,7 +183,6 @@ var dumpLogToFile = function() {
 	}
 
 	downloadLink.click();
-	console.log("Dumpin'");
 }
 
 window.onerror = function handleException(error, url, lineNum) {
