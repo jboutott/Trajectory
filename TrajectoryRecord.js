@@ -1,15 +1,15 @@
-var logBuffer;
+var trj_logBuffer;
 
 window.onload = function() {
-	logBuffer = "";
+	trj_logBuffer = "";
 	
 	var scripts = document.getElementsByTagName("trajectory");
 	var scriptText;
 	for (var i = 0; i < scripts.length; i++) {
 		var src = scripts[i].getAttribute('src');
 		if(src && src.indexOf("TrajectoryRecord") == -1) {
-			scriptText = readFile(src);
-			scriptText = modifyText(scriptText);
+			scriptText = trj_readFile(src);
+			scriptText = trj_modifyText(scriptText);
 			
 			scripts[i].parentNode.removeChild(scripts[i]);
 			
@@ -20,7 +20,7 @@ window.onload = function() {
 	}
 }
 
-var readFile = function(filePath) {
+var trj_readFile = function(filePath) {
 	var xmlhttp;
 	//IE7+, Firefox, Chrome, Opera, Safari
 	if(window.XMLHttpRequest) {
@@ -35,16 +35,16 @@ var readFile = function(filePath) {
 	return xmlhttp.responseText;
 }
 
-var modifyText = function(text) {
-	text = logInput(text);
-	text = logTimer(text);
-	text = logRandom(text);
-	text = logTick(text);
+var trj_modifyText = function(text) {
+	text = trj_logInput(text);
+	text = trj_logTimer(text);
+	text = trj_logRandom(text);
+	text = trj_logTick(text);
 	
 	return text;
 }
 
-var logInput = function(text) {
+var trj_logInput = function(text) {
 	var openPiece = "ig.input.state(";
 	var closePiece = ")";
 	
@@ -55,7 +55,7 @@ var logInput = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "logBoolean");
+		text = trj_logBetween(text, opening, closing, "trj_logBoolean");
 		current = closing;
 	}
 	
@@ -69,7 +69,7 @@ var logInput = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "logBoolean");
+		text = trj_logBetween(text, opening, closing, "trj_logBoolean");
 		current = closing;
 	}
 	
@@ -83,7 +83,7 @@ var logInput = function(text) {
 		opening = text.indexOf(openPiece, current);
 		closing = text.indexOf(closePiece, opening) + 1;
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "logBoolean");
+		text = trj_logBetween(text, opening, closing, "trj_logBoolean");
 		current = closing;
 	}
 	
@@ -93,7 +93,7 @@ var logInput = function(text) {
 	while(true) {
 		current = text.indexOf(target, current);
 		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "logNumber");
+		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
 		current += target.length;
 	}
 	
@@ -103,14 +103,15 @@ var logInput = function(text) {
 	while(true) {
 		current = text.indexOf(target, current);
 		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "logNumber");
+		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
 		current += target.length;
 	}
 	
 	return text;
 }
 
-var logTimer = function(text) {
+var trj_logTimer = function(text) {
+return text;
 	var openPiece = "this.";
 	var closePiece = ".delta()";
 	
@@ -121,62 +122,62 @@ var logTimer = function(text) {
 		closing = text.indexOf(closePiece, current) + closePiece.length;
 		opening = text.lastIndexOf(openPiece, closing);
 		if(opening == -1 || closing == -1)	break;
-		text = logBetween(text, opening, closing, "logNumber");
-		current = closing + 3; //??????????????
+		text = trj_logBetween(text, opening, closing, "trj_logNumber");
+		current = closing + "trj_logNumber".length;
 	}
 	
 	return text;
 }
 
-var logRandom = function(text) {
+var trj_logRandom = function(text) {
 	var target = "Math.random()";
 	
 	var current = 0;
 	while(true) {
 		current = text.indexOf(target, current);
 		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "logNumber");
-		current += target.length;
+		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
+		current += target.length + "trj_logNumber".length;
 	}
 	
 	return text;
 }
 
-var logTick = function(text) {
+var trj_logTick = function(text) {
 	var target = "ig.system.tick";
 	
 	var current = 0;
 	while(true) {
 		current = text.indexOf(target, current);
 		if(current == -1)	break;
-		text = logBetween(text, current, current + target.length, "logNumber");
-		current += target.length;
+		text = trj_logBetween(text, current, current + target.length, "trj_logNumber");
+		current += target.length + "trj_logNumber".length;
 	}
 	
 	return text;
 }
 
-var logBetween = function(text, first, last, logType) {
+var trj_logBetween = function(text, first, last, logType) {
 	var fill = logType + "(" + text.slice(first, last) + ")";
 	text = text.slice(0, first) + fill + text.slice(last);
 	
 	return text;
 }
 
-var logNumber = function(value) {
-	logBuffer += value + "\n";
+var trj_logNumber = function(value) {
+	trj_logBuffer += value + "\n";
 	
 	return value;
 }
 
-var logBoolean = function(value) {
+var trj_logBoolean = function(value) {
 	if(value != true && value != false) {
 		if(value == undefined || value == null)
 			value = false;
 		else
 			value = true;
 	}
-	logBuffer += value + "\n";
+	trj_logBuffer += value + "\n";
 	
 	return value;
 }
@@ -186,8 +187,8 @@ function destroyClickedElement(event)
 	document.body.removeChild(event.target);
 }
 
-var dumpLogToFile = function() {
-	var textFileAsBlob = new Blob([logBuffer], {type:'text/plain'});
+var trj_dumpLogToFile = function() {
+	var textFileAsBlob = new Blob([trj_logBuffer], {type:'text/plain'});
 	var fileName = "TrajectoryLog.txt";
 
 	var downloadLink = document.createElement("a");
@@ -213,12 +214,12 @@ var dumpLogToFile = function() {
 }
 
 window.onerror = function handleException(error, url, lineNum) {
-    dumpLogToFile();
+    trj_dumpLogToFile();
     return false;
 }
 
 window.onkeydown = function(event) {
 	event = event || window.event;
 	if(event.keyCode === 81)
-		dumpLogToFile();
+		trj_dumpLogToFile();
 }
