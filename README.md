@@ -8,16 +8,22 @@ Trajectory
 
 >1. Add:
 
-'''js
+```js
  <script type="text/javascript" src="TrajectoryRecord.js"></script> 
-'''js
+```
 > for recording
 
   OR
-'''js
+```js
 <script type="text/javascript" src="TrajectoryRecord.js"></script>
-'''
-for replaying
+```
+> for replaying
 
->2. Replace <script> with <trajectory> for scripts that include the game file/trajectory should instrument as in: 
->  <script type="text/javascript" src="game.min.js"></script> -> <trajectory type="text/javascript" src="game.min.js"></trajectory>
+>2. Replace script with trajectory for scripts that include the game file/trajectory should instrument as in: 
+
+```js
+<script type="text/javascript" src="game.min.js"></script> 
+``` -> 
+```js
+<trajectory type="text/javascript" src="game.min.js"></trajectory>
+```
