@@ -11,19 +11,18 @@ Trajectory
 ```js
  <script type="text/javascript" src="TrajectoryRecord.js"></script> 
 ```
-> for recording
 
   OR
 ```js
-<script type="text/javascript" src="TrajectoryRecord.js"></script>
+<script type="text/javascript" src="TrajectoryReplay.js"></script>
 ```
-> for replaying
 
 >2. Replace script with trajectory for scripts that include the game file/trajectory should instrument as in: 
 
 ```js
 <script type="text/javascript" src="game.min.js"></script> 
-``` -> 
+```
+TO
 ```js
 <trajectory type="text/javascript" src="game.min.js"></trajectory>
 ```
